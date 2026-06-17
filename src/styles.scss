@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
 :root {
-  /* Colors */
   --bg-primary: #0f1115;
   --bg-secondary: #1a1d24;
   --bg-tertiary: #232730;
@@ -41,56 +43,33 @@ body {
 
 /* Glassmorphism Utilities */
 .glass-panel {
-  background: rgba(26, 29, 36, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(17, 20, 29, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* Buttons */
+/* Buttons and Inputs */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-family: var(--font-family);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
   font-weight: 500;
-  font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
-  outline: none;
+  font-size: 0.9rem;
 }
 
 .btn-primary {
   background-color: var(--accent-primary);
   color: white;
-  box-shadow: 0 4px 14px 0 var(--accent-glow);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background-color: var(--accent-hover);
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
 }
 
 .btn-secondary {
@@ -99,32 +78,24 @@ body {
   border: 1px solid var(--border-color);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.btn-danger {
-  background-color: rgba(239, 68, 68, 0.1);
-  color: var(--danger);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.btn-danger:hover {
-  background-color: var(--danger);
-  color: white;
-}
-
-/* Inputs */
 .input-field {
-  width: 100%;
-  padding: 0.625rem 1rem;
-  background-color: var(--bg-tertiary);
+  background-color: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
   color: var(--text-primary);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
   font-family: var(--font-family);
-  font-size: 0.875rem;
-  transition: border-color 0.2s;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .input-field:focus {

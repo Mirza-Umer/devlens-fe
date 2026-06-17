@@ -1,0 +1,84 @@
+<div class="chat-container">
+  <div class="chat-header glass-panel">
+    <div class="header-info" *ngIf="selectedProject()">
+      <div class="status-dot"></div>
+      <h2>{{ selectedProject()?.name }}</h2>
+      <span class="path-badge">{{ selectedProject()?.path }}</span>
+    </div>
+    <div class="header-info empty" *ngIf="!selectedProject()">
+      <h2>No project selected</h2>
+    </div>
+  </div>
+  
+  <div class="chat-messages" id="chat-messages">
+    <div *ngIf="messages().length === 0 && selectedProject()" class="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h3>Welcome to DevLens AI</h3>
+      <p>Ask me to explain the codebase, trace a bug, or find where a feature is implemented. I have deep context into your project files.</p>
+    </div>
+
+    <div *ngFor="let msg of messages(); let i = index" class="message-wrapper" [class.user]="msg.role === 'user'">
+      <div class="message" 
+           [class.user-message]="msg.role === 'user'" 
+           [class.ai-message]="msg.role === 'ai'"
+           [style.animation-delay]="'0.05s'">
+        
+        <div class="avatar" [class.avatar-ai]="msg.role === 'ai'">
+          <svg *ngIf="msg.role === 'user'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <svg *ngIf="msg.role === 'ai'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        
+        <div class="message-content">
+          <div *ngIf="msg.role === 'user'" class="user-text">{{ msg.content }}</div>
+          <div *ngIf="msg.role === 'ai'" class="markdown-body" [innerHTML]="msg.content"></div>
+          
+          <div *ngIf="msg.filesUsed && msg.filesUsed.length > 0" class="files-used-section">
+            <h4>Context Sourced From</h4>
+            <div class="files-list">
+              <div class="file-chip" *ngFor="let file of msg.filesUsed">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                <span>{{ file.split(/[\\/]/).pop() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="isLoading()" class="message-wrapper">
+      <div class="message ai-message loading-indicator">
+        <div class="avatar avatar-ai">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="message-content">
+          <div class="typing-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area glass-panel" [class.disabled]="!selectedProject()">
+    <form (submit)="sendMessage($event)" class="input-form">
+      <div class="input-wrapper">
+        <input 
+          type="text" 
+          class="chat-input" 
+          [(ngModel)]="question" 
+          name="question" 
+          placeholder="Ask anything about the codebase..." 
+          autocomplete="off"
+          [disabled]="isLoading() || !selectedProject()">
+        <button type="submit" class="send-btn" [disabled]="!question.trim() || isLoading() || !selectedProject()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </form>
+    <div class="footer-text">DevLens AI can make mistakes. Verify important code insights.</div>
+  </div>
+</div>
