@@ -59,6 +59,31 @@
   flex-direction: column;
   gap: 2rem;
   scroll-behavior: smooth;
+  scroll-snap-align: end;
+
+  /* Standard styling (Firefox & newer browsers) */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 transparent; /* thumb color | track color */
+
+  /* Chrome, Safari, and Edge (using CSS nesting) */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #a8a8a8;
+  }
 }
 
 .empty-state {
