@@ -17,4 +17,8 @@ export class AiService {
   chat(projectId: number, question: string): Observable<AiResponse> {
     return this.http.post<AiResponse>(`${this.apiUrl}/chat`, { projectId, question });
   }
+
+  getHistory(projectId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/chat/${projectId}`);
+  }
 }

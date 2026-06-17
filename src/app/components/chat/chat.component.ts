@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
+import { Component, inject, signal, ViewEncapsulation, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../services/project.service';
@@ -228,6 +228,48 @@ export class ChatComponent {
   messages = signal<ChatMessage[]>([]);
   question = '';
   isLoading = signal(false);
+
+  constructor() {
+    // React to selected project changes
+    effect(() => {
+      const project = this.selectedProject();
+      if (project) {
+        this.loadHistory(project.id);
+      } else {
+        this.messages.set([]);
+      }
+    });
+  }
+
+  loadHistory(projectId: number) {
+    this.isLoading.set(true);
+    this.messages.set([]);
+    this.aiService.getHistory(projectId).subscribe({
+      next: async (history) => {
+        const parsedMessages = await Promise.all(
+          history.map(async (msg) => {
+            let content = msg.content;
+            if (msg.role === 'ai') {
+              const rawHtml = await marked(content);
+              content = DOMPurify.sanitize(rawHtml);
+            }
+            return {
+              role: msg.role,
+              content,
+              filesUsed: msg.filesUsed || []
+            };
+          })
+        );
+        this.messages.set(parsedMessages);
+        this.isLoading.set(false);
+        setTimeout(() => this.scrollToBottom(), 100);
+      },
+      error: (err) => {
+        console.error('Failed to load history', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
 
   async sendMessage(event: Event) {
     event.preventDefault();
