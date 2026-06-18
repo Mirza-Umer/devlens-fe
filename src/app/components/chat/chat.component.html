@@ -1,17 +1,19 @@
+<ng-container *ngIf="!selectedProject()">
+  <app-dashboard></app-dashboard>
+</ng-container>
+
+<ng-container *ngIf="selectedProject()">
 <div class="chat-container">
   <div class="chat-header glass-panel">
-    <div class="header-info" *ngIf="selectedProject()">
+    <div class="header-info">
       <div class="status-dot"></div>
       <h2>{{ selectedProject()?.name }}</h2>
       <span class="path-badge">{{ selectedProject()?.path }}</span>
     </div>
-    <div class="header-info empty" *ngIf="!selectedProject()">
-      <h2>No project selected</h2>
-    </div>
   </div>
   
   <div class="chat-messages" id="chat-messages">
-    <div *ngIf="messages().length === 0 && selectedProject()" class="empty-state">
+    <div *ngIf="messages().length === 0" class="empty-state">
       <div class="empty-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
@@ -63,7 +65,7 @@
     </div>
   </div>
 
-  <div class="chat-input-area glass-panel" [class.disabled]="!selectedProject()">
+  <div class="chat-input-area glass-panel">
     <form (submit)="sendMessage($event)" class="input-form">
       <div class="input-wrapper">
         <input 
@@ -73,8 +75,8 @@
           name="question" 
           placeholder="Ask anything about the codebase..." 
           autocomplete="off"
-          [disabled]="isLoading() || !selectedProject()">
-        <button type="submit" class="send-btn" [disabled]="!question.trim() || isLoading() || !selectedProject()">
+          [disabled]="isLoading()">
+        <button type="submit" class="send-btn" [disabled]="!question.trim() || isLoading()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
@@ -82,3 +84,4 @@
     <div class="footer-text">DevLens AI can make mistakes. Verify important code insights.</div>
   </div>
 </div>
+</ng-container>

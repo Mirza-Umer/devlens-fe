@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../services/project.service';
 import { AiService } from '../../services/ai.service';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
@@ -15,7 +16,7 @@ interface ChatMessage {
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DashboardComponent],
   encapsulation: ViewEncapsulation.None,
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'

@@ -1,0 +1,46 @@
+<div class="dashboard-wrapper">
+  <!-- Animated Background Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="dashboard-content">
+    <div class="hero-section">
+      <div class="badge-pill glass-panel">✨ DevLens v1.0 is Live</div>
+      <h1 class="hero-title">Your AI-Powered<br><span class="gradient-text">Codebase Intelligence</span></h1>
+      <p class="hero-subtitle">
+        Understand undocumented legacy code, trace deep architectural bugs, and navigate 
+        complex project structures with a natural language interface hooked directly into your files.
+      </p>
+      
+      <div class="hero-actions">
+        <div class="instruction-card glass-panel">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </div>
+          <div class="text-content">
+            <h4>Get Started</h4>
+            <p>Click the <strong>+</strong> button in the sidebar to add a new project.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-grid">
+      <div class="bento-card glass-panel" *ngFor="let feature of features; let i = index" [style.animation-delay]="i * 0.1 + 's'">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Using the raw SVG path data from the component array -->
+            <path [attr.d]="feature.icon.split(' M')[0]"></path>
+            <path *ngIf="feature.icon.includes(' M')" [attr.d]="'M' + feature.icon.split(' M')[1]"></path>
+            <path *ngIf="feature.icon.includes(' M') && feature.icon.split(' M')[2]" [attr.d]="'M' + feature.icon.split(' M')[2]"></path>
+          </svg>
+        </div>
+        <h3 class="card-title">{{ feature.title }}</h3>
+        <p class="card-desc">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
