@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ProjectService, Project } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
 import { DialogService } from '../../services/dialog.service';
@@ -17,6 +17,7 @@ export class SidebarComponent implements OnInit {
   private projectService = inject(ProjectService);
   public authService = inject(AuthService);
   public dialogService = inject(DialogService);
+  private router = inject(Router);
   
   projects = signal<Project[]>([]);
   showNewProject = signal(false);
@@ -79,6 +80,11 @@ export class SidebarComponent implements OnInit {
 
   selectProject(project: Project) {
     this.projectService.selectedProject.set(project);
+  }
+
+  goHome() {
+    this.projectService.selectedProject.set(null);
+    this.router.navigate(['/']);
   }
 
   logout() {
