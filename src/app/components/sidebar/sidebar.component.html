@@ -52,4 +52,19 @@
       </li>
     </ul>
   </div>
+
+  <div class="sidebar-footer" *ngIf="authService.currentUser$ | async as user">
+    <div class="user-profile">
+      <div class="user-avatar">
+        {{ (user.name ? user.name.charAt(0) : (user.email ? user.email.charAt(0) : 'U')) | uppercase }}
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ user.name || user.email }}</span>
+        <span class="user-role">Developer</span>
+      </div>
+    </div>
+    <button class="action-btn logout-btn" (click)="logout()" title="Logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+    </button>
+  </div>
 </div>

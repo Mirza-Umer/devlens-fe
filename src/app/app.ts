@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { ChatComponent } from './components/chat/chat.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [SidebarComponent, ChatComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-}
+export class App {}
