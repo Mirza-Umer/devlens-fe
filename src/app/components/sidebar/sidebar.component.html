@@ -60,9 +60,17 @@
       </div>
       <div class="user-info">
         <span class="user-name">{{ user.name || user.email }}</span>
-        <span class="user-role">Developer</span>
+        <span class="user-role">{{ user.role === 'admin' ? 'Admin' : 'Developer' }}</span>
       </div>
     </div>
+    
+    <button *ngIf="user.role === 'admin'" class="action-btn" [routerLink]="['/admin']" title="Admin Panel" style="margin-right: 8px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    </button>
+    <button *ngIf="user.role === 'admin'" class="action-btn" [routerLink]="['/']" title="Home" style="margin-right: auto;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </button>
+
     <button class="action-btn logout-btn" (click)="logout()" title="Logout">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
     </button>

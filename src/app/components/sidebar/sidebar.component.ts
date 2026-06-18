@@ -1,19 +1,22 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { ProjectService, Project } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit {
   private projectService = inject(ProjectService);
   public authService = inject(AuthService);
+  public dialogService = inject(DialogService);
   
   projects = signal<Project[]>([]);
   showNewProject = signal(false);
@@ -51,9 +54,17 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  deleteProject(id: number, event: Event) {
+  async deleteProject(id: number, event: Event) {
     event.stopPropagation();
-    if(confirm('Are you sure you want to delete this project?')) {
+    
+    const confirmed = await this.dialogService.confirm({
+      title: 'Delete Project',
+      message: 'Are you sure you want to delete this project? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    });
+
+    if (confirmed) {
       this.projectService.deleteProject(id).subscribe({
         next: () => {
           this.projects.update(list => list.filter(p => p.id !== id));

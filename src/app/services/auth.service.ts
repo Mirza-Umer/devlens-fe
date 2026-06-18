@@ -20,6 +20,7 @@ export class AuthService {
           id: payload.sub,
           email: payload.email,
           name: payload.name,
+          role: payload.role,
           token
         });
       } catch (e) {

@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../../sidebar/sidebar.component';
-import { ChatComponent } from '../../chat/chat.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [SidebarComponent, ChatComponent],
+  imports: [SidebarComponent, RouterOutlet],
   template: `
     <div class="app-layout">
       <app-sidebar></app-sidebar>
       <main class="main-content">
-        <app-chat></app-chat>
+        <router-outlet></router-outlet>
       </main>
     </div>
   `,
