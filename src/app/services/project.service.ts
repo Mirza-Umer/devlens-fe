@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Project {
   id: number;
   name: string;
@@ -14,7 +14,7 @@ export interface Project {
 })
 export class ProjectService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/projects';
+  private apiUrl = `${environment.apiUrl}/projects`;
 
   selectedProject = signal<Project | null>(null);
 

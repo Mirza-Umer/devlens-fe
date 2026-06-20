@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { DialogService } from '../../../services/dialog.service';
+import { environment } from '../../../../environments/environment';
 
 interface User {
   id: string;
@@ -33,7 +34,7 @@ export class AdminPanelComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.http.get<User[]>('http://localhost:3000/users').subscribe({
+    this.http.get<User[]>(`${environment.apiUrl}/users`).subscribe({
       next: (data) => {
         this.users = data;
         this.loading = false;
@@ -57,7 +58,7 @@ export class AdminPanelComponent implements OnInit {
     });
 
     if (confirmed) {
-      this.http.delete(`http://localhost:3000/users/${id}`).subscribe({
+      this.http.delete(`${environment.apiUrl}/users/${id}`).subscribe({
         next: () => {
           this.users = this.users.filter(u => u.id !== id);
           this.cdr.detectChanges();
