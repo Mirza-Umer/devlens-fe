@@ -23,7 +23,8 @@
     <div class="new-project-form" [class.show]="showNewProject()">
       <div class="form-content">
         <input type="text" class="input-field" placeholder="Project Name" [(ngModel)]="newProjectName">
-        <input type="text" class="input-field" placeholder="Absolute Path" [(ngModel)]="newProjectPath">
+        <input type="text" class="input-field" placeholder="Absolute Path or GitHub URL" [(ngModel)]="newProjectPath">
+        <small class="help-text" style="color: #888; font-size: 0.8em; margin-bottom: 10px; display: block; padding-left: 8px;">e.g. https://github.com/Mirza-Umer/devlens</small>
         <div class="form-actions">
           <button class="btn btn-secondary" (click)="toggleNewProject()">Cancel</button>
           <button class="btn btn-primary" (click)="addProject()" [disabled]="!newProjectName || !newProjectPath">Save</button>
