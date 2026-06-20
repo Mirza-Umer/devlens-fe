@@ -130,3 +130,41 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: var(--text-muted, #a0a0a0);
+  font-size: 14px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &::before {
+    margin-right: .5em;
+  }
+
+  &::after {
+    margin-left: .5em;
+  }
+}
+
+.google-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  width: 100%;
+
+  ::ng-deep {
+    iframe {
+      width: 100% !important;
+      margin: 0 auto;
+    }
+  }
+}

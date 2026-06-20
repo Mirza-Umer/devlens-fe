@@ -8,7 +8,7 @@
     <div class="loading" *ngIf="loading">
       <span class="spinner"></span> Loading users...
     </div>
-    
+
     <div class="error" *ngIf="error">
       {{ error }}
     </div>
@@ -22,6 +22,7 @@
             <th>Role</th>
             <th>IP Address</th>
             <th>Joined</th>
+            <th style="text-align: right;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -38,6 +39,11 @@
             </td>
             <td class="mono">{{ u.ipAddress || 'Unknown' }}</td>
             <td>{{ u.createdAt | date:'mediumDate' }}</td>
+            <td style="text-align: right;">
+              <button class="action-btn delete-btn" (click)="deleteUser(u.id)" [disabled]="u.role === 'admin'" [title]="u.role === 'admin' ? 'Cannot delete admins' : 'Delete User'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
