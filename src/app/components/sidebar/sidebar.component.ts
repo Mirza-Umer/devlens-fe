@@ -51,7 +51,10 @@ export class SidebarComponent implements OnInit {
         this.projects.update(list => [...list, p]);
         this.toggleNewProject();
       },
-      error: (err) => console.error('Failed to add project', err)
+      error: (err) => {
+        console.error('Failed to add project', err);
+        alert('Failed to create project: ' + (err.error?.message || err.message || 'Unknown error'));
+      }
     });
   }
 
