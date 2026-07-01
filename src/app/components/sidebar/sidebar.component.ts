@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { ProjectService, Project } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
 import { DialogService } from '../../services/dialog.service';
+import { GitHubService, GitHubRepository } from '../../services/github.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,6 +18,7 @@ export class SidebarComponent implements OnInit {
   private projectService = inject(ProjectService);
   public authService = inject(AuthService);
   public dialogService = inject(DialogService);
+  private githubService = inject(GitHubService);
   private router = inject(Router);
   
   projects = signal<Project[]>([]);
@@ -24,10 +26,22 @@ export class SidebarComponent implements OnInit {
   newProjectName = '';
   newProjectPath = '';
   
+  // GitHub Integration States
+  activeTab = signal<'manual' | 'github'>('manual');
+  githubConnected = signal(false);
+  gitHubRepos = signal<GitHubRepository[]>([]);
+  loadingRepos = signal(false);
+  githubTokenInput = '';
+  searchQuery = signal('');
+  selectedGitHubRepo = signal<GitHubRepository | null>(null);
+  savingToken = signal(false);
+  disconnecting = signal(false);
+  
   selectedProject = this.projectService.selectedProject;
 
   ngOnInit() {
     this.loadProjects();
+    this.checkGitHubStatus();
   }
 
   loadProjects() {
@@ -37,11 +51,101 @@ export class SidebarComponent implements OnInit {
     });
   }
 
+  checkGitHubStatus() {
+    this.githubService.getGitHubStatus().subscribe({
+      next: (res) => {
+        this.githubConnected.set(res.connected);
+        if (res.connected && this.activeTab() === 'github') {
+          this.loadGitHubRepositories();
+        }
+      },
+      error: (err) => console.error('Failed to check GitHub status', err)
+    });
+  }
+
+  switchTab(tab: 'manual' | 'github') {
+    this.activeTab.set(tab);
+    if (tab === 'github') {
+      if (this.githubConnected()) {
+        this.loadGitHubRepositories();
+      }
+    }
+  }
+
+  loadGitHubRepositories() {
+    this.loadingRepos.set(true);
+    this.githubService.getGitHubRepositories().subscribe({
+      next: (repos) => {
+        this.gitHubRepos.set(repos);
+        this.loadingRepos.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load GitHub repositories', err);
+        this.loadingRepos.set(false);
+      }
+    });
+  }
+
+  saveGitHubToken() {
+    if (!this.githubTokenInput.trim()) return;
+    this.savingToken.set(true);
+    this.githubService.saveGitHubToken(this.githubTokenInput.trim()).subscribe({
+      next: () => {
+        this.githubConnected.set(true);
+        this.githubTokenInput = '';
+        this.savingToken.set(false);
+        this.loadGitHubRepositories();
+      },
+      error: (err) => {
+        console.error('Failed to save GitHub token', err);
+        alert('Failed to connect: ' + (err.error?.message || err.message));
+        this.savingToken.set(false);
+      }
+    });
+  }
+
+  disconnectGitHub() {
+    if (confirm('Are you sure you want to disconnect your GitHub account?')) {
+      this.disconnecting.set(true);
+      this.githubService.disconnectGitHub().subscribe({
+        next: () => {
+          this.githubConnected.set(false);
+          this.gitHubRepos.set([]);
+          this.selectedGitHubRepo.set(null);
+          this.disconnecting.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to disconnect GitHub', err);
+          this.disconnecting.set(false);
+        }
+      });
+    }
+  }
+
+  selectGitHubRepo(repo: GitHubRepository) {
+    this.selectedGitHubRepo.set(repo);
+    this.newProjectName = repo.name;
+    this.newProjectPath = repo.cloneUrl;
+  }
+
+  filteredRepos() {
+    const query = this.searchQuery().toLowerCase().trim();
+    if (!query) return this.gitHubRepos();
+    return this.gitHubRepos().filter(repo =>
+      repo.fullName.toLowerCase().includes(query) ||
+      (repo.description && repo.description.toLowerCase().includes(query))
+    );
+  }
+
   toggleNewProject() {
     this.showNewProject.update(v => !v);
     if (!this.showNewProject()) {
       this.newProjectName = '';
       this.newProjectPath = '';
+      this.selectedGitHubRepo.set(null);
+      this.searchQuery.set('');
+    } else {
+      this.checkGitHubStatus();
     }
   }
 

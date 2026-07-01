@@ -95,7 +95,7 @@
 }
 
 .new-project-form.show {
-  max-height: 300px;
+  max-height: 500px;
   opacity: 1;
   margin-bottom: 1.5rem;
 }
@@ -108,6 +108,81 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.tab-header {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.25rem;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.tab-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: fadeIn 0.25s ease both;
+}
+
+.github-repo-item {
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.selected {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+  }
+}
+
+.repos-container {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .form-actions {

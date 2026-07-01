@@ -22,10 +22,83 @@
 
     <div class="new-project-form" [class.show]="showNewProject()">
       <div class="form-content">
-        <input type="text" class="input-field" placeholder="Project Name" [(ngModel)]="newProjectName">
-        <input type="text" class="input-field" placeholder="Absolute Path or GitHub URL" [(ngModel)]="newProjectPath">
-        <small class="help-text" style="color: #888; font-size: 0.8em; margin-bottom: 10px; display: block; padding-left: 8px;">e.g. https://github.com/Mirza-Umer/devlens</small>
-        <div class="form-actions">
+        <!-- Tabs -->
+        <div class="tab-header">
+          <button class="tab-btn" [class.active]="activeTab() === 'manual'" (click)="switchTab('manual')">
+            Manual
+          </button>
+          <button class="tab-btn" [class.active]="activeTab() === 'github'" (click)="switchTab('github')">
+            GitHub
+          </button>
+        </div>
+
+        <!-- Manual Tab Content -->
+        <div *ngIf="activeTab() === 'manual'" class="tab-pane">
+          <input type="text" class="input-field" placeholder="Project Name" [(ngModel)]="newProjectName">
+          <input type="text" class="input-field" placeholder="Absolute Path or GitHub URL" [(ngModel)]="newProjectPath">
+          <small class="help-text" style="color: #888; font-size: 0.8em; margin-bottom: 10px; display: block; padding-left: 8px;">e.g. https://github.com/Mirza-Umer/devlens</small>
+        </div>
+
+        <!-- GitHub Import Tab Content -->
+        <div *ngIf="activeTab() === 'github'" class="tab-pane">
+          <!-- Not Connected: Connect flow -->
+          <div *ngIf="!githubConnected()" class="github-connect-flow">
+            <p class="section-desc" style="color: #bbb; font-size: 0.85em; margin-bottom: 10px; padding: 0 4px; line-height: 1.4;">Connect GitHub using a Personal Access Token to browse and import your repositories.</p>
+            <input type="password" class="input-field" placeholder="Paste GitHub PAT token" [(ngModel)]="githubTokenInput">
+            <small class="help-text" style="color: #888; font-size: 0.8em; margin-top: 4px; margin-bottom: 10px; display: block; padding-left: 8px;">
+              Requires <code>repo</code> scope for private repos. 
+              <a href="https://github.com/settings/tokens/new?scopes=repo&description=DevLens" target="_blank" rel="noopener" style="color: var(--accent-primary, #6366f1); text-decoration: none;">Get Token</a>
+            </small>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" (click)="saveGitHubToken()" [disabled]="!githubTokenInput || savingToken()">
+              {{ savingToken() ? 'Connecting...' : 'Connect GitHub' }}
+            </button>
+          </div>
+
+          <!-- Connected: Repository list flow -->
+          <div *ngIf="githubConnected()" class="github-repos-flow">
+            <div class="github-status-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 4px;">
+              <span class="status-badge connected" style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); color: #34d399; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.2); display: flex; align-items: center; gap: 4px;">
+                <span class="status-dot" style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></span> Connected
+              </span>
+              <button class="disconnect-link" (click)="disconnectGitHub()" [disabled]="disconnecting()" style="background: none; border: none; color: #ef4444; font-size: 0.75rem; cursor: pointer; padding: 0;">
+                Disconnect
+              </button>
+            </div>
+
+            <!-- Repo Search -->
+            <input type="text" class="input-field search-input" style="margin-bottom: 8px;" placeholder="Filter repositories..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)">
+
+            <!-- Repo List -->
+            <div class="repos-container" style="max-height: 160px; overflow-y: auto; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid var(--border-color); padding: 4px;">
+              <div *ngIf="loadingRepos()" class="repos-loading" style="text-align: center; color: #888; font-size: 0.85em; padding: 20px 0;">
+                Loading repositories...
+              </div>
+
+              <div *ngIf="!loadingRepos() && filteredRepos().length === 0" class="repos-empty" style="text-align: center; color: #888; font-size: 0.85em; padding: 20px 0;">
+                No repositories found.
+              </div>
+
+              <ul *ngIf="!loadingRepos() && filteredRepos().length > 0" class="github-repo-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
+                <li *ngFor="let repo of filteredRepos()" 
+                    class="github-repo-item"
+                    [class.selected]="selectedGitHubRepo()?.fullName === repo.fullName"
+                    (click)="selectGitHubRepo(repo)"
+                    style="padding: 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent;">
+                  <div class="repo-meta" style="display: flex; flex-direction: column; gap: 2px;">
+                    <span class="repo-name-text" style="font-size: 0.85rem; font-weight: 500; color: #eee; display: flex; align-items: center; justify-content: space-between;">
+                      {{ repo.fullName }}
+                      <span *ngIf="repo.private" class="private-badge" style="font-size: 0.65rem; background: rgba(245, 158, 11, 0.1); color: #fbbf24; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.2);">Private</span>
+                    </span>
+                    <span *ngIf="repo.description" class="repo-desc" style="font-size: 0.75rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ repo.description }}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions" *ngIf="activeTab() === 'manual' || githubConnected()">
           <button class="btn btn-secondary" (click)="toggleNewProject()">Cancel</button>
           <button class="btn btn-primary" (click)="addProject()" [disabled]="!newProjectName || !newProjectPath">Save</button>
         </div>
