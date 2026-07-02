@@ -45,6 +45,7 @@ import { CommonModule } from '@angular/common';
     .app-layout {
       display: flex;
       height: 100vh;
+      height: 100dvh;
       width: 100vw;
       overflow: hidden;
       background-color: var(--bg-primary, #0f1115);
@@ -188,6 +189,7 @@ import { CommonModule } from '@angular/common';
         top: 0;
         left: 0;
         height: 100vh;
+        height: 100dvh;
         transform: translateX(-100%);
       }
       
