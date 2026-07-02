@@ -240,3 +240,24 @@
     margin: 0;
   }
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dashboard-wrapper {
+    padding: 2rem 1rem;
+  }
+  
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  
+  .instruction-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.25rem;
+  }
+  
+  .bento-card {
+    padding: 1.5rem;
+  }
+}

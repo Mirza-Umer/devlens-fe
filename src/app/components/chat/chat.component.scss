@@ -355,3 +355,27 @@
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 1rem;
+  }
+  
+  .chat-messages {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+  
+  .message {
+    max-width: 95%;
+  }
+  
+  .chat-input-area {
+    padding: 1rem;
+  }
+  
+  .message-content {
+    padding: 1rem;
+  }
+}
