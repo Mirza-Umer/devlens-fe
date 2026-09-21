@@ -190,8 +190,75 @@
 .form-actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 0.5rem;
   margin-top: 0.25rem;
+}
+
+.btn-save-repo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 125px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.scanning-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  border-radius: 8px;
+  margin-top: 0.25rem;
+  animation: fadeIn 0.25s ease;
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border-color: rgba(99, 102, 241, 0.25);
+    border-top-color: #818cf8;
+    flex-shrink: 0;
+  }
+
+  .scanning-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+
+    strong {
+      font-size: 0.78rem;
+      color: #e0e7ff;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    span {
+      font-size: 0.72rem;
+      color: #a5b4fc;
+    }
+  }
+}
+
+.disabled-item {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed !important;
 }
 
 .project-list {

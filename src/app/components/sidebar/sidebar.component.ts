@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { ProjectService, Project } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
 import { DialogService } from '../../services/dialog.service';
+import { ToastService } from '../../services/toast.service';
 import { GitHubService, GitHubRepository } from '../../services/github.service';
 
 @Component({
@@ -18,11 +19,13 @@ export class SidebarComponent implements OnInit {
   private projectService = inject(ProjectService);
   public authService = inject(AuthService);
   public dialogService = inject(DialogService);
+  public toastService = inject(ToastService);
   private githubService = inject(GitHubService);
   private router = inject(Router);
   
   projects = signal<Project[]>([]);
   showNewProject = signal(false);
+  isScanning = signal(false);
   newProjectName = '';
   newProjectPath = '';
   
@@ -64,6 +67,7 @@ export class SidebarComponent implements OnInit {
   }
 
   switchTab(tab: 'manual' | 'github') {
+    if (this.isScanning()) return;
     this.activeTab.set(tab);
     if (tab === 'github') {
       if (this.githubConnected()) {
@@ -123,6 +127,7 @@ export class SidebarComponent implements OnInit {
   }
 
   selectGitHubRepo(repo: GitHubRepository) {
+    if (this.isScanning()) return;
     this.selectedGitHubRepo.set(repo);
     this.newProjectName = repo.name;
     this.newProjectPath = repo.cloneUrl;
@@ -138,6 +143,7 @@ export class SidebarComponent implements OnInit {
   }
 
   toggleNewProject() {
+    if (this.isScanning()) return;
     this.showNewProject.update(v => !v);
     if (!this.showNewProject()) {
       this.newProjectName = '';
@@ -150,14 +156,26 @@ export class SidebarComponent implements OnInit {
   }
 
   addProject() {
-    this.projectService.createProject(this.newProjectName, this.newProjectPath).subscribe({
+    const name = this.newProjectName.trim();
+    const repoPath = this.newProjectPath.trim();
+
+    if (!name || !repoPath || this.isScanning()) return;
+
+    this.isScanning.set(true);
+
+    this.projectService.createProject(name, repoPath).subscribe({
       next: (p) => {
         this.projects.update(list => [...list, p]);
+        this.selectProject(p);
+        this.isScanning.set(false);
         this.toggleNewProject();
+        this.toastService.success(`Repository "${p.name}" scanned and added successfully!`);
       },
       error: (err) => {
         console.error('Failed to add project', err);
-        alert('Failed to create project: ' + (err.error?.message || err.message || 'Unknown error'));
+        this.isScanning.set(false);
+        const errMsg = err.error?.message || err.message || 'Failed to scan repository';
+        this.toastService.error(`Failed to add project: ${errMsg}`);
       }
     });
   }
