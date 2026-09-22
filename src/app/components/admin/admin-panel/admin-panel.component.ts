@@ -31,7 +31,7 @@ export class AdminPanelComponent implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private dialogService = inject(DialogService);
-  
+
   users: User[] = [];
   loading = true;
   error: string | null = null;
@@ -49,7 +49,6 @@ export class AdminPanelComponent implements OnInit {
   });
 
   totalGeolocated = computed(() => this.geolocatedUsers().length);
-
   uniqueCountries = computed(() => {
     const countries = this.geolocatedUsers().map(u => u.country).filter(Boolean);
     return new Set(countries).size;
@@ -87,7 +86,7 @@ export class AdminPanelComponent implements OnInit {
   countryStats = computed(() => {
     const geoUsers = this.geolocatedUsers();
     const counts: Record<string, number> = {};
-    
+
     geoUsers.forEach(u => {
       if (u.country) {
         counts[u.country] = (counts[u.country] || 0) + 1;

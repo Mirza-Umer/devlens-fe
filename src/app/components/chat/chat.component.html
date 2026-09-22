@@ -12,15 +12,39 @@
     </div>
   </div>
   
-  <div class="chat-messages" id="chat-messages">
+  <div class="chat-messages" id="chat-messages" (click)="handleMessageAreaClick($event)">
+    <!-- Empty State -->
     <div *ngIf="messages().length === 0" class="empty-state">
       <div class="empty-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
       <h3>Welcome to DevLens AI</h3>
       <p>Ask me to explain the codebase, trace a bug, or find where a feature is implemented. I have deep context into your project files.</p>
+
+      <!-- Quick-Start Starter Prompt Chips -->
+      <div class="starter-prompts-section">
+        <span class="starter-prompts-label">Quick exploration prompts</span>
+        <div class="prompts-grid">
+          <button 
+            type="button" 
+            *ngFor="let prompt of starterPrompts" 
+            class="prompt-chip" 
+            (click)="selectPrompt(prompt.title)"
+            [disabled]="isLoading()">
+            <div class="prompt-chip-header">
+              <span class="prompt-badge">{{ prompt.badge }}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-icon">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+            <div class="prompt-chip-title">{{ prompt.title }}</div>
+          </button>
+        </div>
+      </div>
     </div>
 
+    <!-- Messages -->
     <div *ngFor="let msg of messages(); let i = index" class="message-wrapper" [class.user]="msg.role === 'user'">
       <div class="message" 
            [class.user-message]="msg.role === 'user'" 
@@ -36,19 +60,42 @@
           <div *ngIf="msg.role === 'user'" class="user-text">{{ msg.content }}</div>
           <div *ngIf="msg.role === 'ai'" class="markdown-body" [innerHTML]="msg.content"></div>
           
+          <!-- Interactive File Citations -->
           <div *ngIf="msg.filesUsed && msg.filesUsed.length > 0" class="files-used-section">
-            <h4>Context Sourced From</h4>
+            <div class="files-used-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+              <span>Context Sourced From ({{ msg.filesUsed.length }})</span>
+            </div>
             <div class="files-list">
-              <div class="file-chip" *ngFor="let file of msg.filesUsed">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-                <span>{{ file.split(/[\\/]/).pop() }}</span>
-              </div>
+              <button 
+                type="button" 
+                class="file-chip interactive" 
+                *ngFor="let file of msg.filesUsed"
+                (click)="openFilePreview(file)"
+                [title]="'Click to preview ' + file">
+                <span 
+                  class="file-ext-tag" 
+                  [style.color]="getFileTypeInfo(file).color"
+                  [style.background]="getFileTypeInfo(file).bg">
+                  {{ getFileTypeInfo(file).ext }}
+                </span>
+                <span class="file-name">{{ file.split(/[\\/]/).pop() }}</span>
+                <svg class="preview-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
     
+    <!-- Loading State -->
     <div *ngIf="isLoading()" class="message-wrapper">
       <div class="message ai-message loading-indicator">
         <div class="avatar avatar-ai">
@@ -65,23 +112,88 @@
     </div>
   </div>
 
+  <!-- Input Area with Multi-line Textarea -->
   <div class="chat-input-area glass-panel">
     <form (submit)="sendMessage($event)" class="input-form">
       <div class="input-wrapper">
-        <input 
-          type="text" 
-          class="chat-input" 
+        <textarea 
+          #chatTextarea
+          class="chat-textarea" 
           [(ngModel)]="question" 
           name="question" 
-          placeholder="Ask anything about the codebase..." 
-          autocomplete="off"
-          [disabled]="isLoading()">
-        <button type="submit" class="send-btn" [disabled]="!question.trim() || isLoading()">
+          placeholder="Ask anything about the codebase... (Enter to send, Shift+Enter for newline)" 
+          rows="1"
+          (keydown)="handleKeyDown($event)"
+          (input)="onInput()"
+          [disabled]="isLoading()"></textarea>
+
+        <button type="submit" class="send-btn" [disabled]="!question.trim() || isLoading()" title="Send Message (Enter)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
     </form>
-    <div class="footer-text">DevLens AI can make mistakes. Verify important code insights.</div>
+    <div class="footer-hint-row">
+      <div class="shortcut-tip">
+        <kbd>Enter</kbd> to send <span class="divider-dot">•</span> <kbd>Shift</kbd> + <kbd>Enter</kbd> for new line
+      </div>
+      <div class="footer-text">DevLens AI can make mistakes. Verify important code insights.</div>
+    </div>
+  </div>
+
+  <!-- Interactive File Preview Drawer / Modal -->
+  <div class="file-preview-overlay" *ngIf="activePreviewFile() as file" (click)="closeFilePreview()">
+    <div class="file-preview-drawer glass-panel" (click)="$event.stopPropagation()">
+      <div class="drawer-header">
+        <div class="drawer-title-col">
+          <div class="drawer-title-row">
+            <span 
+              class="drawer-file-tag"
+              [style.color]="getFileTypeInfo(file.path).color"
+              [style.background]="getFileTypeInfo(file.path).bg">
+              {{ getFileTypeInfo(file.path).ext }}
+            </span>
+            <h3>{{ file.name }}</h3>
+          </div>
+          <span class="drawer-file-path" [title]="file.path">{{ file.path }}</span>
+        </div>
+        <div class="drawer-actions">
+          <button 
+            type="button" 
+            class="drawer-action-btn" 
+            (click)="copyPreviewPath()" 
+            [class.copied]="file.copied"
+            [title]="file.copied ? 'Path copied!' : 'Copy full file path'">
+            <svg *ngIf="!file.copied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg *ngIf="file.copied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>{{ file.copied ? 'Copied Path' : 'Copy Path' }}</span>
+          </button>
+          <button type="button" class="drawer-close-btn" (click)="closeFilePreview()" title="Close (Esc)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="drawer-body">
+        <div class="file-loading" *ngIf="file.loading">
+          <span class="spinner"></span> Loading file context...
+        </div>
+        <div class="file-content-container" *ngIf="!file.loading">
+          <div class="file-meta-bar">
+            <span>{{ file.lineCount }} lines</span>
+            <span>UTF-8</span>
+          </div>
+          <pre class="file-code-view"><code>{{ file.content }}</code></pre>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </ng-container>
