@@ -22,13 +22,13 @@ export class SidebarComponent implements OnInit {
   public toastService = inject(ToastService);
   private githubService = inject(GitHubService);
   private router = inject(Router);
-  
+
   projects = signal<Project[]>([]);
   showNewProject = signal(false);
   isScanning = signal(false);
   newProjectName = '';
   newProjectPath = '';
-  
+
   // GitHub Integration States
   activeTab = signal<'manual' | 'github'>('manual');
   githubConnected = signal(false);
@@ -39,7 +39,7 @@ export class SidebarComponent implements OnInit {
   selectedGitHubRepo = signal<GitHubRepository | null>(null);
   savingToken = signal(false);
   disconnecting = signal(false);
-  
+
   selectedProject = this.projectService.selectedProject;
 
   ngOnInit() {
@@ -182,7 +182,7 @@ export class SidebarComponent implements OnInit {
 
   async deleteProject(id: number, event: Event) {
     event.stopPropagation();
-    
+
     const confirmed = await this.dialogService.confirm({
       title: 'Delete Project',
       message: 'Are you sure you want to delete this project? This action cannot be undone.',
@@ -211,7 +211,6 @@ export class SidebarComponent implements OnInit {
     this.projectService.selectedProject.set(null);
     this.router.navigate(['/']);
   }
-
   logout() {
     this.authService.logout();
   }

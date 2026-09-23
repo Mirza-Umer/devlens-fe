@@ -5,7 +5,8 @@
 
     <div class="admin-tabs">
       <button class="tab-btn" [class.active]="activeTab() === 'list'" (click)="selectTab('list')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
           <line x1="8" y1="6" x2="21" y2="6"></line>
           <line x1="8" y1="12" x2="21" y2="12"></line>
           <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -16,7 +17,8 @@
         User Directory ({{ filteredUsers().length }})
       </button>
       <button class="tab-btn" [class.active]="activeTab() === 'locations'" (click)="selectTab('locations')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="2" y1="12" x2="22" y2="12"></line>
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
@@ -44,16 +46,9 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input 
-            type="text" 
-            class="table-search-input" 
-            placeholder="Search by name, email, IP, or location..."
-            [ngModel]="searchQuery()" 
-            (ngModelChange)="onSearchChange($event)">
-          <button 
-            *ngIf="searchQuery()" 
-            class="clear-search-btn" 
-            (click)="onSearchChange('')" 
+          <input type="text" class="table-search-input" placeholder="Search by name, email, IP, or location..."
+            [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)">
+          <button *ngIf="searchQuery()" class="clear-search-btn" (click)="onSearchChange('')"
             title="Clear search">×</button>
         </div>
 
@@ -77,11 +72,8 @@
             </select>
           </div>
 
-          <button 
-            *ngIf="searchQuery() || roleFilter() !== 'all' || countryFilter() !== 'all'"
-            class="btn-reset-filters" 
-            (click)="resetFilters()"
-            title="Reset all filters">
+          <button *ngIf="searchQuery() || roleFilter() !== 'all' || countryFilter() !== 'all'" class="btn-reset-filters"
+            (click)="resetFilters()" title="Reset all filters">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
               <path d="M3 3v5h5"></path>
@@ -109,7 +101,8 @@
             <tr *ngFor="let u of paginatedUsers()">
               <td>
                 <div class="user-cell">
-                  <div class="avatar">{{ (u.name ? u.name.charAt(0) : (u.email ? u.email.charAt(0) : 'U')) | uppercase }}</div>
+                  <div class="avatar">{{ (u.name ? u.name.charAt(0) : (u.email ? u.email.charAt(0) : 'U')) | uppercase
+                    }}</div>
                   <span class="user-cell-name">{{ u.name || 'N/A' }}</span>
                 </div>
               </td>
@@ -128,8 +121,11 @@
               </td>
               <td>{{ u.createdAt | date:'mediumDate' }}</td>
               <td style="text-align: right;">
-                <button class="action-btn delete-btn" (click)="deleteUser(u.id)" [disabled]="u.role === 'admin'" [title]="u.role === 'admin' ? 'Cannot delete admins' : 'Delete User'">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <button class="action-btn delete-btn" (click)="deleteUser(u.id)" [disabled]="u.role === 'admin'"
+                  [title]="u.role === 'admin' ? 'Cannot delete admins' : 'Delete User'">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
                 </button>
               </td>
             </tr>
@@ -154,8 +150,9 @@
       <!-- Pagination Footer -->
       <div class="pagination-footer" *ngIf="filteredUsers().length > 0">
         <div class="pagination-info">
-          Showing <strong>{{ (currentPage() - 1) * pageSize() + 1 }}</strong> - 
-          <strong>{{ (currentPage() * pageSize()) > filteredUsers().length ? filteredUsers().length : (currentPage() * pageSize()) }}</strong> of 
+          Showing <strong>{{ (currentPage() - 1) * pageSize() + 1 }}</strong> -
+          <strong>{{ (currentPage() * pageSize()) > filteredUsers().length ? filteredUsers().length : (currentPage() *
+            pageSize()) }}</strong> of
           <strong>{{ filteredUsers().length }}</strong> users
         </div>
 
@@ -170,40 +167,24 @@
           </div>
 
           <div class="page-nav-buttons">
-            <button 
-              class="page-btn" 
-              [disabled]="currentPage() === 1" 
-              (click)="setPage(1)" 
-              title="First Page">
+            <button class="page-btn" [disabled]="currentPage() === 1" (click)="setPage(1)" title="First Page">
               «
             </button>
-            <button 
-              class="page-btn" 
-              [disabled]="currentPage() === 1" 
-              (click)="setPage(currentPage() - 1)" 
+            <button class="page-btn" [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)"
               title="Previous Page">
               ‹
             </button>
 
-            <button 
-              *ngFor="let p of pageNumbers()" 
-              class="page-btn page-num" 
-              [class.active]="p === currentPage()" 
+            <button *ngFor="let p of pageNumbers()" class="page-btn page-num" [class.active]="p === currentPage()"
               (click)="setPage(p)">
               {{ p }}
             </button>
 
-            <button 
-              class="page-btn" 
-              [disabled]="currentPage() === totalPages()" 
-              (click)="setPage(currentPage() + 1)" 
+            <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="setPage(currentPage() + 1)"
               title="Next Page">
               ›
             </button>
-            <button 
-              class="page-btn" 
-              [disabled]="currentPage() === totalPages()" 
-              (click)="setPage(totalPages()) 
+            <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="setPage(totalPages()) 
               " title="Last Page">
               »
             </button>
@@ -215,22 +196,30 @@
 
   <!-- Tab 2: Geolocation Dashboard Map -->
   <div class="geo-dashboard" *ngIf="activeTab() === 'locations'">
-    
+
     <!-- Geo Metrics Bento Grid -->
     <div class="geo-metrics">
       <div class="metric-card glass-panel">
         <div class="metric-icon users-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
         </div>
         <div class="metric-info">
           <h3>Geolocated Users</h3>
           <p class="value">{{ totalGeolocated() }}<span class="sub-value">/{{ users().length }} total</span></p>
         </div>
       </div>
-      
+
       <div class="metric-card glass-panel">
         <div class="metric-icon countries-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+            <line x1="4" y1="22" x2="4" y2="15" />
+          </svg>
         </div>
         <div class="metric-info">
           <h3>Countries Active</h3>
@@ -240,7 +229,10 @@
 
       <div class="metric-card glass-panel">
         <div class="metric-icon cities-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
         </div>
         <div class="metric-info">
           <h3>Cities Resolved</h3>
@@ -251,7 +243,8 @@
       <div class="metric-card glass-panel">
         <div class="metric-icon top-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
         </div>
         <div class="metric-info">
@@ -282,7 +275,7 @@
             <!-- Grid Lines -->
             <line x1="500" y1="0" x2="500" y2="500" class="map-grid-line prime-meridian" />
             <line x1="0" y1="250" x2="1000" y2="250" class="map-grid-line equator" />
-            
+
             <!-- Lat/Lon coordinate border indicators -->
             <text x="502" y="12" class="coordinate-text">0° Meridian</text>
             <text x="940" y="246" class="coordinate-text">Equator</text>
@@ -290,37 +283,44 @@
             <!-- Stylized Continents -->
             <g class="continents">
               <!-- North America -->
-              <path d="M 80 80 L 140 50 L 260 40 L 300 60 L 320 120 L 280 180 L 280 200 L 250 220 L 220 220 L 220 240 L 205 240 L 205 220 L 195 200 L 175 160 L 120 160 Z" class="continent-path" />
+              <path
+                d="M 80 80 L 140 50 L 260 40 L 300 60 L 320 120 L 280 180 L 280 200 L 250 220 L 220 220 L 220 240 L 205 240 L 205 220 L 195 200 L 175 160 L 120 160 Z"
+                class="continent-path" />
               <!-- Greenland -->
               <path d="M 280 40 L 320 20 L 340 50 L 310 70 Z" class="continent-path" />
               <!-- South America -->
-              <path d="M 230 240 L 260 250 L 290 280 L 315 310 L 300 370 L 270 420 L 255 430 L 245 430 L 235 390 L 220 310 L 215 280 Z" class="continent-path" />
+              <path
+                d="M 230 240 L 260 250 L 290 280 L 315 310 L 300 370 L 270 420 L 255 430 L 245 430 L 235 390 L 220 310 L 215 280 Z"
+                class="continent-path" />
               <!-- Eurasia -->
-              <path d="M 460 100 L 485 85 L 530 85 L 600 60 L 700 60 L 800 65 L 860 80 L 920 100 L 940 140 L 945 180 L 900 180 L 880 230 L 850 240 L 830 220 L 800 230 L 770 240 L 760 220 L 710 230 L 685 200 L 640 220 L 635 245 L 610 240 L 590 215 L 565 210 L 555 220 L 500 210 L 490 190 L 440 195 L 430 170 L 445 150 L 480 150 L 495 130 L 470 120 L 460 110 Z" class="continent-path" />
+              <path
+                d="M 460 100 L 485 85 L 530 85 L 600 60 L 700 60 L 800 65 L 860 80 L 920 100 L 940 140 L 945 180 L 900 180 L 880 230 L 850 240 L 830 220 L 800 230 L 770 240 L 760 220 L 710 230 L 685 200 L 640 220 L 635 245 L 610 240 L 590 215 L 565 210 L 555 220 L 500 210 L 490 190 L 440 195 L 430 170 L 445 150 L 480 150 L 495 130 L 470 120 L 460 110 Z"
+                class="continent-path" />
               <!-- Islands UK, Japan, NZ, Madagascar -->
               <path d="M 440 100 L 450 90 L 455 105 L 445 115 Z" class="continent-path" />
               <path d="M 890 130 L 910 150 L 900 175 L 880 150 Z" class="continent-path" />
               <path d="M 910 360 L 920 350 L 925 375 L 915 385 Z" class="continent-path" />
               <path d="M 610 360 L 620 350 L 625 375 L 615 385 Z" class="continent-path" />
               <!-- Africa -->
-              <path d="M 450 205 L 490 200 L 525 215 L 560 215 L 590 235 L 600 260 L 630 280 L 620 320 L 570 380 L 555 410 L 545 410 L 530 380 L 525 350 L 500 320 L 470 300 L 445 285 L 435 250 L 435 225 Z" class="continent-path" />
+              <path
+                d="M 450 205 L 490 200 L 525 215 L 560 215 L 590 235 L 600 260 L 630 280 L 620 320 L 570 380 L 555 410 L 545 410 L 530 380 L 525 350 L 500 320 L 470 300 L 445 285 L 435 250 L 435 225 Z"
+                class="continent-path" />
               <!-- Australia -->
-              <path d="M 810 320 L 835 300 L 890 315 L 905 340 L 890 370 L 850 380 L 820 375 L 805 350 Z" class="continent-path" />
+              <path d="M 810 320 L 835 300 L 890 315 L 905 340 L 890 370 L 850 380 L 820 375 L 805 350 Z"
+                class="continent-path" />
               <!-- New Zealand -->
               <path d="M 920 380 L 935 410 L 925 415 Z" class="continent-path" />
             </g>
 
             <!-- Clustered User locator pins -->
             <g class="pins">
-              <g *ngFor="let cluster of mapClusters()" 
-                 [attr.transform]="'translate(' + cluster.x + ', ' + cluster.y + ')'"
-                 class="user-pin"
-                 [class.is-cluster]="cluster.count > 1"
-                 [class.active]="selectedCluster()?.id === cluster.id || hoveredCluster()?.id === cluster.id"
-                 (mouseenter)="setHoveredCluster(cluster)"
-                 (mouseleave)="setHoveredCluster(null)"
-                 (click)="setSelectedCluster(cluster)">
-                
+              <g *ngFor="let cluster of mapClusters()"
+                [attr.transform]="'translate(' + cluster.x + ', ' + cluster.y + ')'" class="user-pin"
+                [class.is-cluster]="cluster.count > 1"
+                [class.active]="selectedCluster()?.id === cluster.id || hoveredCluster()?.id === cluster.id"
+                (mouseenter)="setHoveredCluster(cluster)" (mouseleave)="setHoveredCluster(null)"
+                (click)="setSelectedCluster(cluster)">
+
                 <!-- Single user pin -->
                 <ng-container *ngIf="cluster.count === 1">
                   <circle cx="0" cy="0" r="10" class="pulse-ring" />
@@ -338,11 +338,10 @@
           </svg>
 
           <!-- Dynamically Anchored Glassmorphic Tooltip Card -->
-          <div class="map-tooltip glass-panel-heavy" 
-               *ngIf="selectedCluster() || hoveredCluster()"
-               [ngStyle]="getTooltipStyle(selectedCluster() || hoveredCluster())"
-               [class.selected-mode]="selectedCluster()">
-            
+          <div class="map-tooltip glass-panel-heavy" *ngIf="selectedCluster() || hoveredCluster()"
+            [ngStyle]="getTooltipStyle(selectedCluster() || hoveredCluster())"
+            [class.selected-mode]="selectedCluster()">
+
             <!-- Single User Tooltip -->
             <ng-container *ngIf="(selectedCluster() || hoveredCluster())?.count === 1">
               <div class="tooltip-header" *ngIf="(selectedCluster() || hoveredCluster())?.users?.[0] as user">
@@ -353,9 +352,9 @@
                 </div>
                 <button class="tooltip-close" *ngIf="selectedCluster()" (click)="selectedCluster.set(null)">×</button>
               </div>
-              
+
               <div class="tooltip-divider"></div>
-              
+
               <div class="tooltip-info-grid" *ngIf="(selectedCluster() || hoveredCluster())?.users?.[0] as user">
                 <div class="info-item">
                   <span class="label">IP Address</span>
@@ -436,8 +435,7 @@
         <div class="breakdown-card glass-panel">
           <h3>Recent Locations</h3>
           <div class="sessions-list">
-            <div class="session-item" *ngFor="let u of geolocatedUsers() | slice:0:5" 
-                 (click)="selectUserLocation(u)">
+            <div class="session-item" *ngFor="let u of geolocatedUsers() | slice:0:5" (click)="selectUserLocation(u)">
               <div class="session-avatar">{{ (u.name ? u.name.charAt(0) : 'U') | uppercase }}</div>
               <div class="session-meta">
                 <span class="session-user">{{ u.name || u.email }}</span>
